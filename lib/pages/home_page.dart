@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_1/pages/data_kelompok_page.dart';
 import 'package:tugas_1/pages/login_page.dart';
 import 'package:tugas_1/pages/penjumlahan_pengurangan_page.dart';
 
@@ -74,6 +75,14 @@ class _HomePageState extends State<HomePage> {
                 mainAxisSpacing: 10,
                 childAspectRatio: 1.1,
                 children: [
+                  _buildCard(icon: Icons.person, title: 'Data Kelompok', onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const DataKelompokPage(),
+                      ),
+                    );
+                  }),
                   _buildCard(
                     icon: Icons.calculate,
                     title: 'Penjumlahan & Pengurangan',
