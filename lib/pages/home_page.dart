@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_1/pages/data_kelompok_page.dart';
+import 'package:tugas_1/pages/ganjilgenapprima_page.dart';
+import 'package:tugas_1/pages/jumlah_total_angka_page.dart';
 import 'package:tugas_1/pages/login_page.dart';
 import 'package:tugas_1/pages/penjumlahan_pengurangan_page.dart';
+import 'package:tugas_1/pages/stopwatch_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -55,7 +58,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const SizedBox(height: 10.0),
                     Text(
-                      "Ahmad Zainur Fadli - 123200035",
+                      "Ahmad Zainur Fadli - 123200049",
                       style: const TextStyle(color: Colors.white, fontSize: 14),
                     ),
                     const SizedBox(height: 5.0),
@@ -99,17 +102,41 @@ class _HomePageState extends State<HomePage> {
                   _buildCard(
                     icon: Icons.school,
                     title: 'Ganjil/Genap & Prima',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const CekBilanganPage(),
+                        ),
+                      );
+                    },
                   ),
                   _buildCard(
                     icon: Icons.functions,
                     title: 'Jumlah Total Angka',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const JumlahAngkaPage(),
+                        ),
+                      );
+                    },
                   ),
                   _buildCard(
                     icon: Icons.bar_chart,
                     title: 'Stopwatch',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const StopwatchPage(),
+                        ),
+                      );
+                    },
                   ),
                   _buildCard(
                     icon: Icons.bar_chart,

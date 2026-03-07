@@ -31,7 +31,7 @@ class DataKelompokPage extends StatelessWidget {
                       child: Text("1", style: TextStyle(color: Colors.white)),
                     ),
                     title: const Text("Ahmad Zainur Fadli"),
-                    subtitle: const Text("123200035"),
+                    subtitle: const Text("123200049"),
                   ),
                   Divider(),
                   ListTile(
