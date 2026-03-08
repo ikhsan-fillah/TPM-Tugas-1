@@ -61,6 +61,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
   void _addLap() {
     setState(() {
       laps.insert(0, _formatTime());
+      milliseconds = 0;
     });
   }
 
@@ -141,7 +142,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
                   );
                 },
               ),
-            ),
+            )
           ],
         ),
       ),
