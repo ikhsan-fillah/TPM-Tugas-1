@@ -5,6 +5,8 @@ import 'package:tugas_1/pages/jumlah_total_angka_page.dart';
 import 'package:tugas_1/pages/login_page.dart';
 import 'package:tugas_1/pages/penjumlahan_pengurangan_page.dart';
 import 'package:tugas_1/pages/stopwatch_page.dart';
+import 'package:tugas_1/pages/luas_volume_piramid_page.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -141,7 +143,15 @@ class _HomePageState extends State<HomePage> {
                   _buildCard(
                     icon: Icons.bar_chart,
                     title: 'Luas & Volume Piramid',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const PiramidPage(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

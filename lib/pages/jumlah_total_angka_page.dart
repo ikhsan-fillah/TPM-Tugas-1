@@ -15,7 +15,7 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
   int total = 0;
   String pesanError = "";
 
-  void hitung() {
+  void _hitung() {
     String text = inputAngka.text.trim();
 
     if (text.isEmpty) {
@@ -58,7 +58,7 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
     });
   }
 
-  Future<void> pasteText() async {
+  Future<void> _pasteText() async {
     final data = await Clipboard.getData('text/plain');
 
     if (data != null) {
@@ -68,7 +68,7 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
     }
   }
 
-  void clearText() {
+  void _clearText() {
     setState(() {
       inputAngka.clear();
       jumlahDigit = 0;
@@ -77,7 +77,7 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
     });
   }
 
-  Widget infoCard(String title, int value) {
+  Widget _infoCard(String title, int value) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +140,7 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
                 SizedBox(width: 16),
 
                 ElevatedButton(
-                  onPressed: hitung,
+                  onPressed: _hitung,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
@@ -157,14 +157,14 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
             Row(
               children: [
                 TextButton(
-                  onPressed: pasteText,
+                  onPressed: _pasteText,
                   child: Text("Paste", style: TextStyle(
                     color: Color(0xff2563A8)
                   ),),
                 ),
 
                 TextButton(
-                  onPressed: clearText,
+                  onPressed: _clearText,
                   child: Text("Clear", style: TextStyle(
                     color: Color(0xff2563A8)
                   ),),
@@ -182,11 +182,11 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
             if (jumlahDigit > 0)
               Row(
                 children: [
-                  infoCard("Jumlah Digit", jumlahDigit),
+                  _infoCard("Jumlah Digit", jumlahDigit),
 
                   SizedBox(width: 8),
 
-                  infoCard("Total Penjumlahan", total),
+                  _infoCard("Total Penjumlahan", total),
                 ],
               ),
           ],

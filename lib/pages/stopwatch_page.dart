@@ -14,7 +14,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
   bool isRunning = false;
   List<String> laps = [];
 
-  void start() {
+  void _start() {
     timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
       setState(() {
         milliseconds += 10;
@@ -26,7 +26,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
     });
   }
 
-  void stop() {
+  void _stop() {
     timer?.cancel();
 
     setState(() {
@@ -34,7 +34,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
     });
   }
 
-  void reset() {
+  void _reset() {
     timer?.cancel();
     setState(() {
       milliseconds = 0;
@@ -42,15 +42,15 @@ class _StopwatchPageState extends State<StopwatchPage> {
     });
   }
 
-  void mainButton() {
+  void _mainButton() {
     if (isRunning) {
-      stop();
+      _stop();
     } else {
-      start();
+      _start();
     }
   }
 
-  String formatTime() {
+  String _formatTime() {
     int minutes = (milliseconds ~/ 60000);
     int seconds = (milliseconds ~/ 1000) % 60;
     int ms = (milliseconds % 1000) ~/ 10;
@@ -58,9 +58,9 @@ class _StopwatchPageState extends State<StopwatchPage> {
     return "${minutes.toString().padLeft(2,'0')}:${seconds.toString().padLeft(2,'0')}.${ms.toString().padLeft(2,'0')}";
   }
 
-  void addLap() {
+  void _addLap() {
     setState(() {
-      laps.insert(0, formatTime());
+      laps.insert(0, _formatTime());
     });
   }
 
@@ -73,7 +73,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(formatTime(), style: TextStyle(fontSize: 50)),
+            Text(_formatTime(), style: TextStyle(fontSize: 50)),
         
             SizedBox(height: 30),
         
@@ -81,7 +81,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: (!isRunning && milliseconds > 0) ? reset : null,
+                  onPressed: (!isRunning && milliseconds > 0) ? _reset : null,
                   style: ElevatedButton.styleFrom(
                     shape: CircleBorder(),
                     fixedSize: Size(80, 60),
@@ -96,7 +96,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
                 SizedBox(width: 8),
         
                 ElevatedButton(
-                  onPressed: mainButton,
+                  onPressed: _mainButton,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isRunning
                         ? Colors.white
@@ -117,7 +117,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
                 SizedBox(width: 8),
         
                 ElevatedButton(
-                  onPressed: isRunning ? addLap : null,
+                  onPressed: isRunning ? _addLap : null,
                   style: ElevatedButton.styleFrom(
                     shape: CircleBorder(),
                     fixedSize: Size(80, 60),

@@ -16,7 +16,7 @@ class _CekBilanganPageState extends State<CekBilanganPage> {
   String statusPrima = "";
   String pesanError = "";
 
-  bool isPrima(int n) {
+  bool _isPrima(int n) {
     if (n <= 1) {
       return false;
     }
@@ -30,7 +30,7 @@ class _CekBilanganPageState extends State<CekBilanganPage> {
     return true;
   }
 
-  void cekBilangan() {
+  void _cekBilangan() {
     String input = inputAngka.text.trim();
 
     if (input.isEmpty) {
@@ -60,11 +60,11 @@ class _CekBilanganPageState extends State<CekBilanganPage> {
 
       jenis = n % 2 == 0 ? "Genap" : "Ganjil";
 
-      statusPrima = isPrima(n) ? "Bilangan Prima" : "Bukan Prima";
+      statusPrima = _isPrima(n) ? "Bilangan Prima" : "Bukan Prima";
     });
   }
 
-  Widget infoCard(String title, String value) {
+  Widget _infoCard(String title, String value) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,7 +125,7 @@ class _CekBilanganPageState extends State<CekBilanganPage> {
                 SizedBox(width: 16),
 
                 ElevatedButton(
-                  onPressed: cekBilangan,
+                  onPressed: _cekBilangan,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
@@ -149,11 +149,11 @@ class _CekBilanganPageState extends State<CekBilanganPage> {
             if (angka != null)
               Row(
                 children: [
-                  infoCard("Jenis Bilangan", jenis),
+                  _infoCard("Jenis Bilangan", jenis),
 
                   SizedBox(width: 8),
 
-                  infoCard("Status Prima", statusPrima),
+                  _infoCard("Status Prima", statusPrima),
                 ],
               ),
           ],
