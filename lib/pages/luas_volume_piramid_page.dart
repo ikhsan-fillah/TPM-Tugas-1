@@ -25,7 +25,6 @@ class _PiramidPageState extends State<PiramidPage> {
   String pesanError = "";
 
   void _hitungPersegi() {
-
     if (sisiAlasP.text.isEmpty || tinggiPiramidPageP.text.isEmpty) {
       setState(() {
         pesanError = "Input tidak boleh kosong";
@@ -57,8 +56,9 @@ class _PiramidPageState extends State<PiramidPage> {
   }
 
   void _hitungPersegiPanjang() {
-
-    if (panjangAlasPP.text.isEmpty || lebarAlasPP.text.isEmpty || tinggiPiramidPagePP.text.isEmpty) {
+    if (panjangAlasPP.text.isEmpty ||
+        lebarAlasPP.text.isEmpty ||
+        tinggiPiramidPagePP.text.isEmpty) {
       setState(() {
         pesanError = "Input tidak boleh kosong";
         volume = 0;
@@ -90,8 +90,9 @@ class _PiramidPageState extends State<PiramidPage> {
   }
 
   void _hitungSegitiga() {
-
-    if (panjangAlasS.text.isEmpty || tinggiAlasS.text.isEmpty || tinggiPiramidPageS.text.isEmpty) {
+    if (panjangAlasS.text.isEmpty ||
+        tinggiAlasS.text.isEmpty ||
+        tinggiPiramidPageS.text.isEmpty) {
       setState(() {
         pesanError = "Input tidak boleh kosong";
         volume = 0;
@@ -123,22 +124,27 @@ class _PiramidPageState extends State<PiramidPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        appBar: AppBar(title: Text("PiramidPage")),
+        appBar: AppBar(
+          title: const Text("Luas & Volume Piramid"),
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
+        ),
         body: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.all(4),
+                padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: Color(0XFFECECEC),
-                  borderRadius: BorderRadius.circular(8),
+                  color: colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: SizedBox(
-                  height: 32,
+                  height: 36,
                   child: TabBar(
                     onTap: (index) {
                       setState(() {
@@ -151,20 +157,17 @@ class _PiramidPageState extends State<PiramidPage> {
                     isScrollable: false,
                     indicatorSize: TabBarIndicatorSize.tab,
                     indicator: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(4),
+                      color: colorScheme.primary,
+                      borderRadius: BorderRadius.circular(6),
                     ),
-                    labelStyle: TextStyle(
+                    labelStyle: const TextStyle(
                       fontSize: 10,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                     ),
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.black,
-                    labelPadding: EdgeInsets.symmetric(
-                      vertical: 0,
-                      horizontal: 0,
-                    ),
-                    tabs: [
+                    labelColor: colorScheme.onPrimary,
+                    unselectedLabelColor: colorScheme.onSurfaceVariant,
+                    labelPadding: EdgeInsets.zero,
+                    tabs: const [
                       Tab(text: "PERSEGI"),
                       Tab(text: "PERSEGI PANJANG"),
                       Tab(text: "SEGITIGA"),
@@ -172,10 +175,14 @@ class _PiramidPageState extends State<PiramidPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Expanded(
                 child: TabBarView(
-                  children: [_persegi(), _persegiPanjang(), _segitiga()],
+                  children: [
+                    _persegi(colorScheme),
+                    _persegiPanjang(colorScheme),
+                    _segitiga(colorScheme),
+                  ],
                 ),
               ),
             ],
@@ -185,278 +192,106 @@ class _PiramidPageState extends State<PiramidPage> {
     );
   }
 
-  Widget _persegi() {
+  Widget _buildField(TextEditingController ctrl, String label, ColorScheme cs) {
+    return TextField(
+      controller: ctrl,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        label: Text(label),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: cs.primary, width: 2),
+        ),
+        filled: true,
+        fillColor: cs.surfaceContainerLowest,
+      ),
+    );
+  }
+
+  Widget _hitungButton(VoidCallback onPressed, ColorScheme cs) {
+    return FilledButton(
+      onPressed: onPressed,
+      style: FilledButton.styleFrom(
+        minimumSize: const Size(double.infinity, 48),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      child: const Text("Hitung"),
+    );
+  }
+
+  Widget _resultRow(ColorScheme cs) {
+    return Row(
+      children: [
+        _infoCard("Volume", "${volume.toStringAsFixed(2)} cm³"),
+        const SizedBox(width: 12),
+        _infoCard("Luas Permukaan", "${luasPermukaan.toStringAsFixed(2)} cm²"),
+      ],
+    );
+  }
+
+  Widget _persegi(ColorScheme cs) {
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.only(top: 4),
+        padding: const EdgeInsets.only(top: 4),
         child: Column(
           children: [
-            TextField(
-              controller: sisiAlasP,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                label: Text("Sisi alas (cm)"),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.black),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-            SizedBox(height: 8),
-            TextField(
-              controller: tinggiPiramidPageP,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                label: Text("Tinggi (cm)"),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.black),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _hitungPersegi,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                minimumSize: Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(12),
-                ),
-              ),
-              child: Text("Hitung"),
-            ),
-
-            SizedBox(height: 16),
-
+            _buildField(sisiAlasP, "Sisi alas (cm)", cs),
+            const SizedBox(height: 8),
+            _buildField(tinggiPiramidPageP, "Tinggi (cm)", cs),
+            const SizedBox(height: 16),
+            _hitungButton(_hitungPersegi, cs),
+            const SizedBox(height: 16),
             if (pesanError.isNotEmpty)
-              Text(pesanError, style: TextStyle(color: Colors.red)),
-              
-            SizedBox(height: 24),
-
-            if (volume > 0)
-              Row(
-                children: [
-                  _infoCard("Volume", "${volume.toStringAsFixed(2)} cm³"),
-
-                  SizedBox(width: 8),
-
-                  _infoCard(
-                    "Luas Permukaan",
-                    "${luasPermukaan.toStringAsFixed(2)} cm²",
-                  ),
-                ],
-              ),
+              Text(pesanError, style: TextStyle(color: cs.error)),
+            if (volume > 0) _resultRow(cs),
           ],
         ),
       ),
     );
   }
 
-  Widget _persegiPanjang() {
+  Widget _persegiPanjang(ColorScheme cs) {
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.only(top: 4),
+        padding: const EdgeInsets.only(top: 4),
         child: Column(
           children: [
-            TextField(
-              controller: panjangAlasPP,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                label: Text("Panjang Alas (cm)"),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.black),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-            SizedBox(height: 8),
-            TextField(
-              controller: lebarAlasPP,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                label: Text("Lebar Alas (cm)"),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.black),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-            SizedBox(height: 8),
-            TextField(
-              controller: tinggiPiramidPagePP,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                label: Text("Tinggi (cm)"),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.black),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _hitungPersegiPanjang,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                minimumSize: Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(12),
-                ),
-              ),
-              child: Text("Hitung"),
-            ),
-            SizedBox(height: 16),
-
+            _buildField(panjangAlasPP, "Panjang Alas (cm)", cs),
+            const SizedBox(height: 8),
+            _buildField(lebarAlasPP, "Lebar Alas (cm)", cs),
+            const SizedBox(height: 8),
+            _buildField(tinggiPiramidPagePP, "Tinggi (cm)", cs),
+            const SizedBox(height: 16),
+            _hitungButton(_hitungPersegiPanjang, cs),
+            const SizedBox(height: 16),
             if (pesanError.isNotEmpty)
-              Text(pesanError, style: TextStyle(color: Colors.red)),
-              
-            SizedBox(height: 24),
-
-            if (volume > 0)
-              Row(
-                children: [
-                  _infoCard("Volume", "${volume.toStringAsFixed(2)} cm³"),
-
-                  SizedBox(width: 8),
-
-                  _infoCard(
-                    "Luas Permukaan",
-                    "${luasPermukaan.toStringAsFixed(2)} cm²",
-                  ),
-                ],
-              ),
+              Text(pesanError, style: TextStyle(color: cs.error)),
+            if (volume > 0) _resultRow(cs),
           ],
         ),
       ),
     );
   }
 
-  Widget _segitiga() {
+  Widget _segitiga(ColorScheme cs) {
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.only(top: 4),
+        padding: const EdgeInsets.only(top: 4),
         child: Column(
           children: [
-            TextField(
-              controller: panjangAlasS,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                label: Text("Panjang Alas (cm)"),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.black),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-            SizedBox(height: 8),
-            TextField(
-              controller: tinggiAlasS,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                label: Text("Tinggi Alas (cm)"),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.black),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-            SizedBox(height: 8),
-            TextField(
-              controller: tinggiPiramidPageS,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                label: Text("Tinggi (cm)"),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.black),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _hitungSegitiga,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                minimumSize: Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(12),
-                ),
-              ),
-              child: Text("Hitung"),
-            ),
-
-            SizedBox(height: 16),
-
+            _buildField(panjangAlasS, "Panjang Alas (cm)", cs),
+            const SizedBox(height: 8),
+            _buildField(tinggiAlasS, "Tinggi Alas (cm)", cs),
+            const SizedBox(height: 8),
+            _buildField(tinggiPiramidPageS, "Tinggi (cm)", cs),
+            const SizedBox(height: 16),
+            _hitungButton(_hitungSegitiga, cs),
+            const SizedBox(height: 16),
             if (pesanError.isNotEmpty)
-              Text(pesanError, style: TextStyle(color: Colors.red)),
-              
-            SizedBox(height: 24),
-
-            if (volume > 0)
-              Row(
-                children: [
-                  _infoCard("Volume", "${volume.toStringAsFixed(2)} cm³"),
-
-                  SizedBox(width: 8),
-
-                  _infoCard(
-                    "Luas Permukaan",
-                    "${luasPermukaan.toStringAsFixed(2)} cm²",
-                  ),
-                ],
-              ),
+              Text(pesanError, style: TextStyle(color: cs.error)),
+            if (volume > 0) _resultRow(cs),
           ],
         ),
       ),
@@ -469,9 +304,7 @@ class _PiramidPageState extends State<PiramidPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-
           const SizedBox(height: 6),
-
           Text(
             value,
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'dart:async';
 
 class StopwatchPage extends StatefulWidget {
@@ -55,7 +56,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
     int seconds = (milliseconds ~/ 1000) % 60;
     int ms = (milliseconds % 1000) ~/ 10;
 
-    return "${minutes.toString().padLeft(2,'0')}:${seconds.toString().padLeft(2,'0')}.${ms.toString().padLeft(2,'0')}";
+    return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}.${ms.toString().padLeft(2, '0')}";
   }
 
   void _addLap() {
@@ -68,83 +69,122 @@ class _StopwatchPageState extends State<StopwatchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Stopwatch")),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(_formatTime(), style: TextStyle(fontSize: 50)),
-        
-            SizedBox(height: 30),
-        
-            Row(
+      appBar: AppBar(
+        title: const Text("Stopwatch"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+      ),
+      body: Builder(
+        builder: (context) {
+          final colorScheme = Theme.of(context).colorScheme;
+          return Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: (!isRunning && milliseconds > 0) ? _reset : null,
-                  style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(),
-                    fixedSize: Size(80, 60),
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 20,
                   ),
-                  child: Text("RST",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-        
-                SizedBox(width: 8),
-        
-                ElevatedButton(
-                  onPressed: _mainButton,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isRunning
-                        ? Colors.white
-                        : Colors.black,
-                    foregroundColor: isRunning
-                      ? Colors.black : Colors.white,
-                    shape: CircleBorder(),
-                    fixedSize: Size(100, 80),
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    isRunning
-                        ? "STOP"
-                        : "START",
-                    style: TextStyle(fontSize: 16),
+                    _formatTime(),
+                    style: TextStyle(
+                      fontSize: 52,
+                      fontWeight: FontWeight.w300,
+                      color: colorScheme.onPrimaryContainer,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
                   ),
                 ),
-        
-                SizedBox(width: 8),
-        
-                ElevatedButton(
-                  onPressed: isRunning ? _addLap : null,
-                  style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(),
-                    fixedSize: Size(80, 60),
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black
-                  ),
-                  child: Text("LAP",
-                    style: TextStyle(fontSize: 16),
+                const SizedBox(height: 36),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: (!isRunning && milliseconds > 0)
+                          ? _reset
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        fixedSize: const Size(72, 72),
+                        backgroundColor: colorScheme.surfaceContainerHigh,
+                        foregroundColor: colorScheme.onSurface,
+                      ),
+                      child: const Text("RST", style: TextStyle(fontSize: 14)),
+                    ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: _mainButton,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isRunning
+                            ? colorScheme.errorContainer
+                            : colorScheme.primary,
+                        foregroundColor: isRunning
+                            ? colorScheme.onErrorContainer
+                            : colorScheme.onPrimary,
+                        shape: const CircleBorder(),
+                        fixedSize: const Size(96, 96),
+                        elevation: 4,
+                      ),
+                      child: Text(
+                        isRunning ? "STOP" : "START",
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: isRunning ? _addLap : null,
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        fixedSize: const Size(72, 72),
+                        backgroundColor: colorScheme.surfaceContainerHigh,
+                        foregroundColor: colorScheme.onSurface,
+                      ),
+                      child: const Text("LAP", style: TextStyle(fontSize: 14)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: laps.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: CircleAvatar(
+                          radius: 16,
+                          backgroundColor: colorScheme.primaryContainer,
+                          child: Text(
+                            "${laps.length - index}",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                        ),
+                        title: Text("Lap ${laps.length - index}"),
+                        trailing: Text(
+                          laps[index],
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: colorScheme.primary,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
             ),
-        
-            Expanded(
-              child: ListView.builder(
-                itemCount: laps.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text("Lap ${laps.length - index}"),
-                    trailing: Text(laps[index]),
-                  );
-                },
-              ),
-            )
-          ],
-        ),
+          );
+        },
       ),
     );
   }
