@@ -15,83 +15,120 @@ class DataKelompokPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Center(
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.group_rounded,
-                  size: 48,
-                  color: colorScheme.onPrimaryContainer,
-                ),
-              ),
+            _buildExpandCard(
+              image: 'assets/images/anggota1.jpg',
+              nama: "Ikhsan Fillah Hidayat",
+              nim: "123230219",
+              kelas: "IF-E",
+              hobi: "Main Mobile Legends",
+              citaCita: "Jadi anak baik",
+              minatTA: "Jaringan Komputer",
+              pengalaman: "Admin Laboratorium",
+              email: "ikhsanfillahhidayat@gmail.com",
+              linkedIn: "Ikhsan Fillah Hidayat",
+              colorScheme: colorScheme,
             ),
-            const SizedBox(height: 16),
-            Center(
-              child: Text(
-                "Anggota Kelompok",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.primary,
-                ),
-              ),
-            ),
-            const SizedBox(height: 24.0),
-            Card(
-              elevation: 0,
-              color: colorScheme.surfaceContainerLow,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: colorScheme.primaryContainer,
-                      child: Text(
-                        "1",
-                        style: TextStyle(
-                          color: colorScheme.onPrimaryContainer,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    title: const Text(
-                      "Ahmad Zainur Fadli",
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    subtitle: const Text("123200049"),
-                  ),
-                  Divider(indent: 16, endIndent: 16),
-                  ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: colorScheme.primaryContainer,
-                      child: Text(
-                        "2",
-                        style: TextStyle(
-                          color: colorScheme.onPrimaryContainer,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    title: const Text(
-                      "Ikhsan Fillah Hidayat",
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    subtitle: const Text("123230219"),
-                  ),
-                ],
-              ),
+            const SizedBox(height: 5),
+            _buildExpandCard(
+              image: 'assets/images/anggota1.jpg',
+              nama: "Ikhsan Fillah Hidayat",
+              nim: "123230219",
+              kelas: "IF-E",
+              hobi: "Main Mobile Legends",
+              citaCita: "Jadi anak baik",
+              minatTA: "Jaringan Komputer",
+              pengalaman: "Admin Laboratorium",
+              email: "ikhsanfillahhidayat@gmail.com",
+              linkedIn: "Ikhsan Fillah Hidayat",
+              colorScheme: colorScheme,
             ),
           ],
         ),
       ),
     );
   }
+}
+
+Widget _buildExpandCard({
+  required String? image,
+  required String nama,
+  required String nim,
+  required String kelas,
+  required String hobi,
+  required String citaCita,
+  required String minatTA,
+  required String pengalaman,
+  required String email,
+  required String linkedIn,
+  required ColorScheme colorScheme,
+}) {
+  return Card(
+    elevation: 0,
+    color: colorScheme.surfaceContainerLow,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    clipBehavior: Clip.antiAlias,
+    child: ExpansionTile(
+      leading: CircleAvatar(
+        radius: 24,
+        backgroundImage: image != null ? AssetImage(image) : null,
+        backgroundColor: colorScheme.primaryContainer,
+        child: image == null
+            ? Text(
+                nama[0],
+                style: TextStyle(
+                  color: colorScheme.onPrimaryContainer,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              )
+            : null,
+      ),
+      title: Text(nama, style: const TextStyle(fontWeight: FontWeight.bold)),
+      subtitle: Text(nim),
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Divider(),
+              _buildInfoRow("Kelas", kelas, colorScheme),
+              _buildInfoRow("Hobi", hobi, colorScheme),
+              _buildInfoRow("Cita-cita", citaCita, colorScheme),
+              _buildInfoRow("Minat TA", minatTA, colorScheme),
+              _buildInfoRow("Pengalaman", pengalaman, colorScheme),
+              _buildInfoRow("Email", email, colorScheme),
+              _buildInfoRow("LinkedIn", linkedIn, colorScheme),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildInfoRow(String label, String value, ColorScheme colorScheme) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 100,
+          child: Text(
+            label,
+            style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 12),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ],
+    ),
+  );
 }
