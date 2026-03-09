@@ -115,7 +115,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
                         backgroundColor: colorScheme.surfaceContainerHigh,
                         foregroundColor: colorScheme.onSurface,
                       ),
-                      child: const Text("RST", style: TextStyle(fontSize: 14)),
+                      child: const Text("RST", style: TextStyle(fontSize: 12)),
                     ),
                     const SizedBox(width: 16),
                     ElevatedButton(
@@ -148,7 +148,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
                         backgroundColor: colorScheme.surfaceContainerHigh,
                         foregroundColor: colorScheme.onSurface,
                       ),
-                      child: const Text("LAP", style: TextStyle(fontSize: 14)),
+                      child: const Text("LAP", style: TextStyle(fontSize: 12)),
                     ),
                   ],
                 ),
