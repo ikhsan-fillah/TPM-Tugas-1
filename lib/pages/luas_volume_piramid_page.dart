@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:math';
 
 class PiramidPage extends StatefulWidget {
@@ -196,6 +197,10 @@ class _PiramidPageState extends State<PiramidPage> {
     return TextField(
       controller: ctrl,
       keyboardType: TextInputType.number,
+      maxLength: 10,
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+      ],
       decoration: InputDecoration(
         label: Text(label),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -236,6 +241,7 @@ class _PiramidPageState extends State<PiramidPage> {
       child: Padding(
         padding: const EdgeInsets.only(top: 4),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildField(sisiAlasP, "Sisi alas (cm)", cs),
             const SizedBox(height: 8),
@@ -257,6 +263,7 @@ class _PiramidPageState extends State<PiramidPage> {
       child: Padding(
         padding: const EdgeInsets.only(top: 4),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildField(panjangAlasPP, "Panjang Alas (cm)", cs),
             const SizedBox(height: 8),
@@ -280,6 +287,7 @@ class _PiramidPageState extends State<PiramidPage> {
       child: Padding(
         padding: const EdgeInsets.only(top: 4),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildField(panjangAlasS, "Panjang Alas (cm)", cs),
             const SizedBox(height: 8),
