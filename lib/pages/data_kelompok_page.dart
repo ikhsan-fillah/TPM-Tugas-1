@@ -37,7 +37,7 @@ class DataKelompokPage extends StatelessWidget {
                 image: 'assets/images/anggota2.jpg',
                 nama: "Ikhsan Fillah Hidayat",
                 nim: "123230219",
-                domisili: "Jakarta",
+                domisili: "Klaten Bersinar",
                 kelas: "IF-E",
                 hobi: "Main Mobile Legends",
                 citaCita: "Jadi anak baik",

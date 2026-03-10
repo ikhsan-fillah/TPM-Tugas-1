@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tugas_1/pages/data_kelompok_page.dart';
 import 'package:tugas_1/pages/ganjilgenapprima_page.dart';
 import 'package:tugas_1/pages/jumlah_total_angka_page.dart';
+import 'package:tugas_1/pages/login1_page.dart';
 import 'package:tugas_1/pages/login_page.dart';
 import 'package:tugas_1/pages/penjumlahan_pengurangan_page.dart';
 import 'package:tugas_1/pages/stopwatch_page.dart';
@@ -28,7 +29,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
+                MaterialPageRoute(builder: (context) => const Login1Page()),
                 (route) => false,
               );
             },

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_1/pages/login_page.dart';
+import 'package:tugas_1/pages/login1_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
         ),
       ),
-      home: const LoginPage(),
+      home: const Login1Page(),
     );
   }
 }
