@@ -36,6 +36,13 @@ class _PenjumlahanPenguranganPageState
       return;
     }
 
+    if (input1.length > 1000000 || input2.length > 1000000) {
+      setState(() {
+        hasil = 'Digit tidak boleh lebih dari 1000000';
+      });
+      return;
+    }
+
     double result;
     if (operasi == 'Penjumlahan') {
       result = angka1 + angka2;
