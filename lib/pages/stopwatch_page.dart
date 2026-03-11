@@ -10,10 +10,25 @@ class StopwatchPage extends StatefulWidget {
 }
 
 class _StopwatchPageState extends State<StopwatchPage> {
-  int milliseconds = 0;
+  int startHour = 0;
+  int startMinute = 0;
+  int startSecond = 0;
+
+  late int milliseconds;
+  int lastLapTime = 0;
   Timer? timer;
   bool isRunning = false;
   List<String> laps = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    milliseconds =
+        startHour * 60 * 60 * 1000 +
+        startMinute * 60 * 1000 +
+        startSecond * 1000;
+  }
 
   void _start() {
     timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
@@ -52,17 +67,34 @@ class _StopwatchPageState extends State<StopwatchPage> {
   }
 
   String _formatTime() {
-    int minutes = (milliseconds ~/ 60000);
+    int hours = milliseconds ~/ 3600000;
+    int minutes = (milliseconds ~/ 60000) % 60;
     int seconds = (milliseconds ~/ 1000) % 60;
     int ms = (milliseconds % 1000) ~/ 10;
 
-    return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}.${ms.toString().padLeft(2, '0')}";
+    return "${hours.toString().padLeft(2, '0')}:"
+          "${minutes.toString().padLeft(2, '0')}:"
+          "${seconds.toString().padLeft(2, '0')}."
+          "${ms.toString().padLeft(2, '0')}";
+  }
+  String _formatLap(int time) {
+    int hours = time ~/ 3600000;
+    int minutes = (time ~/ 60000) % 60;
+    int seconds = (time ~/ 1000) % 60;
+    int ms = (time % 1000) ~/ 10;
+
+    return "${hours.toString().padLeft(2, '0')}:"
+          "${minutes.toString().padLeft(2, '0')}:"
+          "${seconds.toString().padLeft(2, '0')}."
+          "${ms.toString().padLeft(2, '0')}";
   }
 
   void _addLap() {
     setState(() {
-      laps.insert(0, _formatTime());
-      milliseconds = 0;
+      int lapTime = milliseconds - lastLapTime;
+      lastLapTime = milliseconds;
+
+      laps.insert(0, _formatLap(lapTime));
     });
   }
 
