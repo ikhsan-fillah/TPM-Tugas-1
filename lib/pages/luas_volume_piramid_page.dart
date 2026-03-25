@@ -228,10 +228,11 @@ class _PiramidPageState extends State<PiramidPage> {
 
   Widget _resultRow(ColorScheme cs) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _infoCard("Volume", "${volume.toStringAsFixed(2)} cm³"),
-        const SizedBox(width: 12),
-        _infoCard("Luas Permukaan", "${luasPermukaan.toStringAsFixed(2)} cm²"),
+        _infoCard("Volume", "${volume.toStringAsFixed(2)} cm³", cs),
+        SizedBox(width: 12),
+        _infoCard("Luas Permukaan", "${luasPermukaan.toStringAsFixed(2)} cm²", cs),
       ],
     );
   }
@@ -244,11 +245,11 @@ class _PiramidPageState extends State<PiramidPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildField(sisiAlasP, "Sisi alas (cm)", cs),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             _buildField(tinggiPiramidPageP, "Tinggi (cm)", cs),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             _hitungButton(_hitungPersegi, cs),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             if (pesanError.isNotEmpty)
               Text(pesanError, style: TextStyle(color: cs.error)),
             if (volume > 0) _resultRow(cs),
@@ -306,18 +307,31 @@ class _PiramidPageState extends State<PiramidPage> {
     );
   }
 
-  Widget _infoCard(String title, String value) {
+  Widget _infoCard(String title, String value, ColorScheme colorScheme) {
     return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-          const SizedBox(height: 6),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-        ],
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: TextStyle(
+                fontSize: 12,
+                color: colorScheme.onPrimaryContainer,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(value, style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onPrimaryContainer,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

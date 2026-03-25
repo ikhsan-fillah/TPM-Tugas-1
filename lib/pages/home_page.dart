@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_1/pages/cek_hari_weton_page.dart';
 import 'package:tugas_1/pages/data_kelompok_page.dart';
 import 'package:tugas_1/pages/ganjilgenapprima_page.dart';
 import 'package:tugas_1/pages/jumlah_total_angka_page.dart';
@@ -140,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   _buildCard(
                     icon: Icons.functions_rounded,
-                    title: 'Jumlah Total Angka',
+                    title: 'Jumlah Angka',
                     colorScheme: colorScheme,
                     onTap: () {
                       Navigator.push(
@@ -173,6 +174,19 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const PiramidPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildCard(
+                    icon: Icons.calendar_today,
+                    title: 'Hari & Weton',
+                    colorScheme: colorScheme,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CekHariWetonPage(),
                         ),
                       );
                     },

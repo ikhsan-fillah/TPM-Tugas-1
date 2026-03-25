@@ -65,20 +65,31 @@ class _CekBilanganPageState extends State<CekBilanganPage> {
     });
   }
 
-  Widget _infoCard(String title, String value) {
+  Widget _infoCard(String title, String value, ColorScheme colorScheme) {
     return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-
-          const SizedBox(height: 6),
-
-          Text(
-            value,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-        ],
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: TextStyle(
+                fontSize: 12,
+                color: colorScheme.onPrimaryContainer,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(value, style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onPrimaryContainer,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -87,7 +98,7 @@ class _CekBilanganPageState extends State<CekBilanganPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Cek Bilangan"),
+        title: const Text("Ganjil/Genap & Prima"),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
       ),
@@ -155,9 +166,9 @@ class _CekBilanganPageState extends State<CekBilanganPage> {
                 if (angka != null)
                   Row(
                     children: [
-                      _infoCard("Jenis Bilangan", jenis),
+                      _infoCard("Jenis Bilangan", jenis, colorScheme),
                       const SizedBox(width: 12),
-                      _infoCard("Status Prima", statusPrima),
+                      _infoCard("Status Prima", statusPrima, colorScheme),
                     ],
                   ),
               ],
