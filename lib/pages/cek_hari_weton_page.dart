@@ -10,7 +10,6 @@ class CekHariWetonPage extends StatefulWidget {
 class _CekHariWetonPageState extends State<CekHariWetonPage> {
   DateTime? selectedDate;
 
-  String tanggalTampil = "";
   String namaHari = "";
   String namaPasaran = "";
   String hasilWeton = "";
@@ -48,6 +47,9 @@ class _CekHariWetonPageState extends State<CekHariWetonPage> {
       setState(() {
         selectedDate = picked;
         pesanError = "";
+        namaHari = "";
+        namaPasaran = "";
+        hasilWeton = "";
       });
     }
   }
@@ -76,7 +78,6 @@ class _CekHariWetonPageState extends State<CekHariWetonPage> {
     if (selectedDate == null) {
       setState(() {
         pesanError = "Silakan pilih tanggal terlebih dahulu";
-        tanggalTampil = "";
         namaHari = "";
         namaPasaran = "";
         hasilWeton = "";
@@ -100,6 +101,16 @@ class _CekHariWetonPageState extends State<CekHariWetonPage> {
       namaHari = hari;
       namaPasaran = pasaran;
       hasilWeton = "$hari $pasaran";
+      pesanError = "";
+    });
+  }
+
+  void _resetInputDanHasil() {
+    setState(() {
+      selectedDate = null;
+      namaHari = "";
+      namaPasaran = "";
+      hasilWeton = "";
       pesanError = "";
     });
   }
@@ -237,6 +248,17 @@ class _CekHariWetonPageState extends State<CekHariWetonPage> {
                 ),
               ),
               child: Text("Cek Hari & Weton"),
+            ),
+            SizedBox(height: 8),
+            OutlinedButton(
+              onPressed: _resetInputDanHasil,
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size.fromHeight(48),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              child: const Text('Reset'),
             ),
 
             SizedBox(height: 8),

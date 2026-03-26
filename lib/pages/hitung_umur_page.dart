@@ -105,6 +105,8 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
       int years = now.year - tanggalLahir.year;
       int months = now.month - tanggalLahir.month;
       int days = now.day - tanggalLahir.day;
+      int hours = now.hour;
+      int minutes = now.minute;
 
       if (days < 0) {
         final prevMonthYear = now.month == 1 ? now.year - 1 : now.year;
@@ -123,23 +125,14 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
         return;
       }
 
-      final duration = now.difference(
-        DateTime(tanggalLahir.year, tanggalLahir.month, tanggalLahir.day),
-      );
-
-      if (duration.isNegative) {
-        _setError('Terjadi kesalahan perhitungan tanggal');
-        return;
-      }
-
       setState(() {
         _pesanError = '';
         _sudahDihitung = true;
         _umurTahun = years;
-        _umurBulan = (years * 12) + months;
-        _umurHari = duration.inDays;
-        _umurJam = duration.inHours;
-        _umurMenit = duration.inMinutes;
+        _umurBulan = months;
+        _umurHari = days;
+        _umurJam = hours;
+        _umurMenit = minutes;
       });
     } catch (_) {
       _setError('Terjadi kesalahan saat menghitung umur, silakan coba lagi');
@@ -266,6 +259,22 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
               Text(_pesanError, style: TextStyle(color: colorScheme.error)),
             const SizedBox(height: 16),
             if (_sudahDihitung && _pesanError.isEmpty) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: colorScheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Text('Umur kamu adalah $_umurTahun tahun $_umurBulan bulan $_umurHari hari $_umurJam jam $_umurMenit menit',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.onSecondaryContainer,
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
               Row(
                 children: [
                   _infoCard('Tahun', _umurTahun, colorScheme),
