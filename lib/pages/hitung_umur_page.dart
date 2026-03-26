@@ -263,7 +263,7 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: colorScheme.secondaryContainer,
+                  color: colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text('Umur kamu adalah $_umurTahun tahun $_umurBulan bulan $_umurHari hari $_umurJam jam $_umurMenit menit',
@@ -274,24 +274,6 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
-              Row(
-                children: [
-                  _infoCard('Tahun', _umurTahun, colorScheme),
-                  const SizedBox(width: 12),
-                  _infoCard('Bulan', _umurBulan, colorScheme),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  _infoCard('Hari', _umurHari, colorScheme),
-                  const SizedBox(width: 12),
-                  _infoCard('Jam', _umurJam, colorScheme),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(children: [_infoCard('Menit', _umurMenit, colorScheme)]),
             ],
           ],
         ),
