@@ -8,6 +8,7 @@ import 'package:tugas_1/pages/login_page.dart';
 import 'package:tugas_1/pages/penjumlahan_pengurangan_page.dart';
 import 'package:tugas_1/pages/stopwatch_page.dart';
 import 'package:tugas_1/pages/luas_volume_piramid_page.dart';
+import 'package:tugas_1/pages/hitung_umur_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -187,6 +188,19 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const CekHariWetonPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildCard(
+                    icon: Icons.cake_rounded,
+                    title: 'Hitung Umur',
+                    colorScheme: colorScheme,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HitungUmurPage(),
                         ),
                       );
                     },
