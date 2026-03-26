@@ -4,20 +4,15 @@ import 'package:tugas_1/pages/data_kelompok_page.dart';
 import 'package:tugas_1/pages/ganjilgenapprima_page.dart';
 import 'package:tugas_1/pages/jumlah_total_angka_page.dart';
 import 'package:tugas_1/pages/login1_page.dart';
-import 'package:tugas_1/pages/login_page.dart';
 import 'package:tugas_1/pages/penjumlahan_pengurangan_page.dart';
 import 'package:tugas_1/pages/stopwatch_page.dart';
 import 'package:tugas_1/pages/luas_volume_piramid_page.dart';
 import 'package:tugas_1/pages/hitung_umur_page.dart';
+import 'package:tugas_1/pages/konversi_hijriah_page.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -201,6 +196,19 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const HitungUmurPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildCard(
+                    icon: Icons.mosque_rounded,
+                    title: 'Masehi ke Hijriah',
+                    colorScheme: colorScheme,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const KonversiHijriahPage(),
                         ),
                       );
                     },
