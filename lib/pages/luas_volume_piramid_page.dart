@@ -123,6 +123,19 @@ class _PiramidPageState extends State<PiramidPage> {
     });
   }
 
+  void _clearAllFields() {
+    sisiAlasP.clear();
+    tinggiPiramidPageP.clear();
+
+    panjangAlasPP.clear();
+    lebarAlasPP.clear();
+    tinggiPiramidPagePP.clear();
+
+    panjangAlasS.clear();
+    tinggiAlasS.clear();
+    tinggiPiramidPageS.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -148,7 +161,9 @@ class _PiramidPageState extends State<PiramidPage> {
                   height: 36,
                   child: TabBar(
                     onTap: (index) {
+                      FocusScope.of(context).unfocus();
                       setState(() {
+                        _clearAllFields();
                         volume = 0;
                         luasPermukaan = 0;
                         pesanError = "";
