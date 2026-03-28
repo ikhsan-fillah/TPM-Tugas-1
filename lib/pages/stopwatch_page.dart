@@ -54,7 +54,9 @@ class _StopwatchPageState extends State<StopwatchPage> {
     timer?.cancel();
     setState(() {
       milliseconds = 0;
+      lastLapTime = 0;
       laps.clear();
+      isRunning = false;
     });
   }
 
@@ -115,6 +117,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
+                  width: double.infinity,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
                     vertical: 20,
@@ -123,13 +126,16 @@ class _StopwatchPageState extends State<StopwatchPage> {
                     color: colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Text(
-                    _formatTime(),
-                    style: TextStyle(
-                      fontSize: 52,
-                      fontWeight: FontWeight.w300,
-                      color: colorScheme.onPrimaryContainer,
-                      fontFeatures: const [FontFeature.tabularFigures()],
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      _formatTime(),
+                      style: TextStyle(
+                        fontSize: 52,
+                        fontWeight: FontWeight.w300,
+                        color: colorScheme.onPrimaryContainer,
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                      ),
                     ),
                   ),
                 ),
