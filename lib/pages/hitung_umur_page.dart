@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class HitungUmurPage extends StatefulWidget {
@@ -11,23 +13,45 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
   DateTime? _tanggalLahir;
   String _pesanError = '';
   bool _sudahDihitung = false;
+  Timer? _timerRealtime;
 
   int _umurTahun = 0;
   int _umurBulan = 0;
   int _umurHari = 0;
   int _umurJam = 0;
   int _umurMenit = 0;
+  int _umurDetik = 0;
+
+  int get _umurDetikAman => ((this as dynamic)._umurDetik as int?) ?? 0;
+
+  void _stopRealtimeUpdate() {
+    _timerRealtime?.cancel();
+    _timerRealtime = null;
+  }
+
+  void _startRealtimeUpdate() {
+    _stopRealtimeUpdate();
+    _timerRealtime = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted || !_sudahDihitung || _tanggalLahir == null) {
+        return;
+      }
+      _hitungUmur(startRealtime: false);
+    });
+  }
 
   void _resetHasil() {
+    _stopRealtimeUpdate();
     _umurTahun = 0;
     _umurBulan = 0;
     _umurHari = 0;
     _umurJam = 0;
     _umurMenit = 0;
+    _umurDetik = 0;
     _sudahDihitung = false;
   }
 
   void _setError(String message) {
+    if (!mounted) return;
     setState(() {
       _pesanError = message;
       _resetHasil();
@@ -44,7 +68,10 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
       lastDate: now,
     );
 
+    if (!mounted) return;
+
     if (picked != null) {
+      _stopRealtimeUpdate();
       setState(() {
         _tanggalLahir = picked;
         _pesanError = '';
@@ -82,7 +109,7 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
     return DateTime(year, month + 1, 0).day;
   }
 
-  void _hitungUmur() {
+  void _hitungUmur({bool startRealtime = true}) {
     if (_tanggalLahir == null) {
       _setError('Silakan pilih tanggal lahir terlebih dahulu');
       return;
@@ -107,6 +134,7 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
       int days = now.day - tanggalLahir.day;
       int hours = now.hour;
       int minutes = now.minute;
+      int seconds = now.second;
 
       if (days < 0) {
         final prevMonthYear = now.month == 1 ? now.year - 1 : now.year;
@@ -133,7 +161,12 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
         _umurHari = days;
         _umurJam = hours;
         _umurMenit = minutes;
+        _umurDetik = seconds;
       });
+
+      if (startRealtime) {
+        _startRealtimeUpdate();
+      }
     } catch (_) {
       _setError('Terjadi kesalahan saat menghitung umur, silakan coba lagi');
     }
@@ -145,6 +178,51 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
       _pesanError = '';
       _resetHasil();
     });
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    (this as dynamic)._umurDetik ??= 0;
+  }
+
+  @override
+  void dispose() {
+    _stopRealtimeUpdate();
+    super.dispose();
+  }
+
+  Widget _infoCard(String title, String value, ColorScheme colorScheme) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 12,
+                color: colorScheme.onPrimaryContainer,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onPrimaryContainer,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -163,11 +241,8 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Hitung umur berdasarkan tanggal lahir dalam tahun, bulan, hari, jam, dan menit.',
-              style: TextStyle(
-                fontSize: 14,
-                color: colorScheme.onSurfaceVariant,
-              ),
+              'Hitung umur berdasarkan tanggal lahir dalam tahun, bulan, hari, jam, menit, dan detik.',
+              style: TextStyle(fontSize: 14, color: colorScheme.onSurface),
             ),
             const SizedBox(height: 16),
             InkWell(
@@ -181,8 +256,8 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  color: colorScheme.surfaceContainerLowest,
-                  border: Border.all(color: colorScheme.outlineVariant),
+                  color: colorScheme.surface,
+                  border: Border.all(color: colorScheme.outline),
                 ),
                 child: Row(
                   children: [
@@ -233,13 +308,51 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
                   color: colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Text('Umur kamu adalah $_umurTahun tahun $_umurBulan bulan $_umurHari hari $_umurJam jam $_umurMenit menit',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: colorScheme.onSecondaryContainer,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Hasil Lengkap',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '$_umurTahun tahun $_umurBulan bulan $_umurHari hari $_umurJam jam $_umurMenit menit $_umurDetikAman detik',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  _infoCard('Tahun', _umurTahun.toString(), colorScheme),
+                  const SizedBox(width: 12),
+                  _infoCard('Bulan', _umurBulan.toString(), colorScheme),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  _infoCard('Hari', _umurHari.toString(), colorScheme),
+                  const SizedBox(width: 12),
+                  _infoCard('Jam', _umurJam.toString(), colorScheme),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  _infoCard('Menit', _umurMenit.toString(), colorScheme),
+                  const SizedBox(width: 12),
+                  _infoCard('Detik', _umurDetikAman.toString(), colorScheme),
+                ],
               ),
             ],
           ],
