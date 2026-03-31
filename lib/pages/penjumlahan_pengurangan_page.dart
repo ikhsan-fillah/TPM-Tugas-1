@@ -16,6 +16,8 @@ class _PenjumlahanPenguranganPageState
   String operasi = "Penjumlahan";
 
   void _hitung() {
+    const double batasMaksimal = 1000000000;
+    const double batasMinimal = -1000000000;
     final String input1 = _angka1Controller.text.trim();
     final String input2 = _angka2Controller.text.trim();
 
@@ -36,9 +38,12 @@ class _PenjumlahanPenguranganPageState
       return;
     }
 
-    if (input1.length > 1000000 || input2.length > 1000000) {
+    if (angka1 < batasMinimal ||
+        angka1 > batasMaksimal ||
+        angka2 < batasMinimal ||
+        angka2 > batasMaksimal) {
       setState(() {
-        hasil = 'Digit tidak boleh lebih dari 1000000';
+        hasil = 'Input harus di rentang -1.000.000.000 sampai 1.000.000.000';
       });
       return;
     }
@@ -46,19 +51,27 @@ class _PenjumlahanPenguranganPageState
     double result;
     if (operasi == 'Penjumlahan') {
       result = angka1 + angka2;
+      if (result < batasMinimal || result > batasMaksimal) {
+        setState(() {
+          hasil = 'Hasil harus di rentang -1.000.000.000 sampai 1.000.000.000';
+        });
+        return;
+      }
       setState(() {
-        hasil = '$angka1 + $angka2 = $result';
+        hasil = '$result';
       });
     } else {
       result = angka1 - angka2;
+      if (result < batasMinimal || result > batasMaksimal) {
+        setState(() {
+          hasil = 'Hasil harus di rentang -1.000.000.000 sampai 1.000.000.000';
+        });
+        return;
+      }
       setState(() {
-        hasil = '$angka1 - $angka2 = $result';
+        hasil = '$result';
       });
     }
-
-    setState(() {
-      hasil = result.toString();
-    });
   }
 
   @override
