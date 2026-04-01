@@ -27,16 +27,6 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
       return;
     }
 
-    if (!RegExp(r'^[0-9]+$').hasMatch(text)) {
-      setState(() {
-        pesanError =
-            "Input hanya boleh bilangan bulat (tidak boleh huruf atau desimal)";
-        jumlahDigit = 0;
-        total = 0;
-      });
-      return;
-    }
-
     if (text.length > 10000) {
       setState(() {
         pesanError = "Digit tidak boleh lebih dari 10000";
@@ -46,15 +36,27 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
       return;
     }
 
-    jumlahDigit = text.length;
-    total = 0;
+    int jumlahDigitBaru = 0;
+    int totalBaru = 0;
 
     for (int i = 0; i < text.length; i++) {
-      total += int.parse(text[i]);
+      final char = text[i];
+      if (RegExp(r'^[0-9]$').hasMatch(char)) {
+        jumlahDigitBaru++;
+        totalBaru += int.parse(char);
+      }
     }
 
     setState(() {
-      pesanError = "";
+      if (jumlahDigitBaru == 0) {
+        pesanError = "Input harus mengandung minimal satu angka";
+        jumlahDigit = 0;
+        total = 0;
+      } else {
+        pesanError = "";
+        jumlahDigit = jumlahDigitBaru;
+        total = totalBaru;
+      }
     });
   }
 
@@ -88,13 +90,17 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: TextStyle(
+            Text(
+              title,
+              style: TextStyle(
                 fontSize: 12,
                 color: colorScheme.onPrimaryContainer,
               ),
             ),
             SizedBox(height: 8),
-            Text(value.toString(), style: TextStyle(
+            Text(
+              value.toString(),
+              style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onPrimaryContainer,
@@ -123,7 +129,7 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Ketik angka apa saja, lalu lihat berapa banyak digit dan berapa totalnya.",
+                  "Ketik kombinasi huruf dan angka, lalu lihat berapa banyak digit dan berapa total angkanya.",
                   style: TextStyle(
                     fontSize: 14,
                     color: colorScheme.onSurfaceVariant,
@@ -140,7 +146,7 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
                         minLines: 5,
                         maxLines: 5,
                         decoration: InputDecoration(
-                          hintText: "Masukkan angka ...",
+                          hintText: "Masukkan huruf dan angka ...",
                           alignLabelWithHint: true,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -158,7 +164,7 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
                           fillColor: colorScheme.surfaceContainerLowest,
                         ),
                       ),
-                    ),              
+                    ),
                   ],
                 ),
                 Row(
