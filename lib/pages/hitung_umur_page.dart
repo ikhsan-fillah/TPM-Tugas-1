@@ -13,7 +13,9 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
   DateTime? _tanggalLahir;
   String _pesanError = '';
   bool _sudahDihitung = false;
+  bool _modeDemoMidnight = false;
   Timer? _timerRealtime;
+  Duration _offsetDemoMidnight = Duration.zero;
 
   int _umurTahun = 0;
   int _umurBulan = 0;
@@ -109,6 +111,43 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
     return DateTime(year, month + 1, 0).day;
   }
 
+  DateTime _nowForCalculation() {
+    final now = DateTime.now();
+    if (!_modeDemoMidnight) return now;
+    return now.add(_offsetDemoMidnight);
+  }
+
+  void _aktifkanDemoMidnight() {
+    final nowReal = DateTime.now();
+    var target = DateTime(2015, 15, 30, 23, 59, 55);
+
+    if (!target.isAfter(nowReal)) {
+      target = target.add(const Duration(days: 1));
+    }
+
+    setState(() {
+      _modeDemoMidnight = true;
+      _offsetDemoMidnight = target.difference(nowReal);
+      _pesanError = '';
+    });
+
+    if (_tanggalLahir != null) {
+      _hitungUmur();
+    }
+  }
+
+  void _nonaktifkanDemoMidnight() {
+    setState(() {
+      _modeDemoMidnight = false;
+      _offsetDemoMidnight = Duration.zero;
+      _pesanError = '';
+    });
+
+    if (_tanggalLahir != null && _sudahDihitung) {
+      _hitungUmur();
+    }
+  }
+
   void _hitungUmur({bool startRealtime = true}) {
     if (_tanggalLahir == null) {
       _setError('Silakan pilih tanggal lahir terlebih dahulu');
@@ -116,7 +155,7 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
     }
 
     try {
-      final now = DateTime.now();
+      final now = _nowForCalculation();
       final tanggalLahir = _tanggalLahir!;
 
       if (tanggalLahir.isAfter(now)) {
@@ -297,6 +336,44 @@ class _HitungUmurPageState extends State<HitungUmurPage> {
               child: const Text('Reset'),
             ),
             const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _aktifkanDemoMidnight,
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(46),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    child: const Text('Demo 23:59:55'),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _modeDemoMidnight
+                        ? _nonaktifkanDemoMidnight
+                        : null,
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(46),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    child: const Text('Matikan Demo'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            if (_modeDemoMidnight)
+              Text(
+                'Mode demo aktif: waktu dihitung dari 23:59:55 agar pergantian hari cepat terlihat.',
+                style: TextStyle(color: colorScheme.primary),
+              ),
+            if (_modeDemoMidnight) const SizedBox(height: 8),
             if (_pesanError.isNotEmpty)
               Text(_pesanError, style: TextStyle(color: colorScheme.error)),
             const SizedBox(height: 16),
