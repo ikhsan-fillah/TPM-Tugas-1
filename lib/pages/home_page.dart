@@ -3,6 +3,7 @@ import 'package:tugas_1/pages/cek_hari_weton_page.dart';
 import 'package:tugas_1/pages/data_kelompok_page.dart';
 import 'package:tugas_1/pages/ganjilgenapprima_page.dart';
 import 'package:tugas_1/pages/jumlah_total_angka_page.dart';
+import 'package:tugas_1/pages/konversi_saka_page.dart';
 import 'package:tugas_1/pages/login1_page.dart';
 import 'package:tugas_1/pages/penjumlahan_pengurangan_page.dart';
 import 'package:tugas_1/pages/stopwatch_page.dart';
@@ -209,6 +210,19 @@ class HomePage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const KonversiHijriahPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildCard(
+                    icon: Icons.temple_hindu_rounded,
+                    title: 'Masehi ke Saka',
+                    colorScheme: colorScheme,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const KonversiSakaPage(),
                         ),
                       );
                     },
