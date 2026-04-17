@@ -8,244 +8,204 @@ class KonversiSakaPage extends StatefulWidget {
 }
 
 class _KonversiSakaPageState extends State<KonversiSakaPage> {
-  static final DateTime _minDate = DateTime(1937, 1, 1);
-  static final DateTime _maxDate = DateTime(2076, 12, 31);
 
-  DateTime? _tanggalMasehi;
-  String _pesanError = '';
-  bool _sudahDikonversi = false;
+  // DATA NYEPI
+  static final List<_DataNyepi> _dataNyepi = [
+    _DataNyepi(DateTime(2000, 3, 7), 1922),
+    _DataNyepi(DateTime(2001, 3, 26), 1923),
+    _DataNyepi(DateTime(2002, 3, 15), 1924),
+    _DataNyepi(DateTime(2003, 3, 4), 1925),
+    _DataNyepi(DateTime(2004, 3, 22), 1926),
+    _DataNyepi(DateTime(2005, 3, 11), 1927),
+    _DataNyepi(DateTime(2006, 3, 30), 1928),
+    _DataNyepi(DateTime(2007, 3, 19), 1929),
+    _DataNyepi(DateTime(2008, 3, 7), 1930),
+    _DataNyepi(DateTime(2009, 3, 26), 1931),
+    _DataNyepi(DateTime(2010, 3, 16), 1932),
+    _DataNyepi(DateTime(2011, 3, 5), 1933),
+    _DataNyepi(DateTime(2012, 3, 23), 1934),
+    _DataNyepi(DateTime(2013, 3, 12), 1935),
+    _DataNyepi(DateTime(2014, 3, 31), 1936),
+    _DataNyepi(DateTime(2015, 3, 21), 1937),
+    _DataNyepi(DateTime(2016, 3, 9), 1938),
+    _DataNyepi(DateTime(2017, 3, 28), 1939),
+    _DataNyepi(DateTime(2018, 3, 17), 1940),
+    _DataNyepi(DateTime(2019, 3, 7), 1941),
+    _DataNyepi(DateTime(2020, 3, 25), 1942),
+    _DataNyepi(DateTime(2021, 3, 14), 1943),
+    _DataNyepi(DateTime(2022, 3, 3), 1944),
+    _DataNyepi(DateTime(2023, 3, 22), 1945),
+    _DataNyepi(DateTime(2024, 3, 11), 1946),
+    _DataNyepi(DateTime(2025, 3, 29), 1947),
+    _DataNyepi(DateTime(2026, 3, 19), 1948),
+    _DataNyepi(DateTime(2027, 3, 8), 1949),
+    _DataNyepi(DateTime(2028, 3, 26), 1950),
+    _DataNyepi(DateTime(2029, 3, 15), 1951),
+    _DataNyepi(DateTime(2030, 3, 5), 1952),
+  ];
 
-  int _sakaHari = 0;
-  int _sakaBulan = 0;
-  int _sakaTahun = 0;
-  String _namaBulanSaka = '';
-  String _namaHariSaka = '';
-  String _hasilLengkapSaka = '';
+  static const List<String> _namaSasih = [
+    'Kasa','Karo','Katiga','Kapat','Kalima','Kanem',
+    'Kapitu','Kawolu','Kasanga','Kadasa','Desta','Sada',
+    'Kanem Nampih'
+  ];
 
-  Future<void> _pickTanggalMasehi() async {
+  DateTime? _tanggal;
+  String _error = '';
+  bool _converted = false;
+
+  int hari = 0;
+  int bulan = 0;
+  int tahun = 0;
+  String namaBulan = '';
+  String namaHari = '';
+  String hasilLengkap = '';
+
+  static final DateTime _minDate = DateTime(2000);
+  static final DateTime _maxDate = DateTime(2030, 12, 31);
+
+  Future<void> _pickDate() async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: _tanggalMasehi ?? DateTime.now(),
+      initialDate: DateTime.now(),
       firstDate: _minDate,
       lastDate: _maxDate,
     );
 
     if (picked != null) {
       setState(() {
-        _tanggalMasehi = picked;
-        _pesanError = '';
-        _sudahDikonversi = false;
+        _tanggal = picked;
+        _converted = false;
+        _error = '';
       });
     }
   }
 
-  String _formatTanggal(DateTime date) {
-    const namaBulan = [
-      '',
-      'Januari',
-      'Februari',
-      'Maret',
-      'April',
-      'Mei',
-      'Juni',
-      'Juli',
-      'Agustus',
-      'September',
-      'Oktober',
-      'November',
-      'Desember',
+  String _saptawara(int w) {
+    const d = ['Soma','Anggara','Buda','Wraspati','Sukra','Saniscara','Redite'];
+    return d[w - 1];
+  }
+
+  String _tanggalText() {
+    if (_tanggal == null) return "Pilih tanggal Masehi";
+    return "${_tanggal!.day} ${_bulanNama(_tanggal!.month)} ${_tanggal!.year}";
+  }
+
+  String _bulanNama(int m) {
+    const b = [
+      '', 'Januari','Februari','Maret','April','Mei','Juni',
+      'Juli','Agustus','September','Oktober','November','Desember'
     ];
-
-    return '${date.day} ${namaBulan[date.month]} ${date.year}';
+    return b[m];
   }
 
-  String _tanggalPilihanText() {
-    if (_tanggalMasehi == null) return 'Pilih tanggal Masehi';
-    return _formatTanggal(_tanggalMasehi!);
+  // PANJANG SASIH (FIX 29/30 + KABISAT)
+  List<int> _panjangSasih(int jumlahSasih) {
+    List<int> hasil = [];
+
+    for (int i = 0; i < jumlahSasih; i++) {
+      hasil.add(i.isEven ? 30 : 29);
+    }
+
+    if (jumlahSasih == 13) {
+      hasil.insert(6, 30);
+    }
+
+    return hasil;
   }
 
-  String _namaHariIndonesiaDariWeekday(int weekday) {
-    const namaHari = [
-      'Senin',
-      'Selasa',
-      'Rabu',
-      'Kamis',
-      'Jumat',
-      'Sabtu',
-      'Minggu',
-    ];
-
-    if (weekday < 1 || weekday > 7) return '-';
-    return namaHari[weekday - 1];
-  }
-
-  String _namaBulanSakaDariNomor(int bulan) {
-    const bulanSaka = [
-      '',
-      'Chaitra',
-      'Vaisakha',
-      'Jyaistha',
-      'Ashadha',
-      'Shravana',
-      'Bhadra',
-      'Ashvina',
-      'Kartika',
-      'Agrahayana',
-      'Pausa',
-      'Magha',
-      'Phalguna',
-    ];
-
-    if (bulan < 1 || bulan > 12) return '-';
-    return bulanSaka[bulan];
-  }
-
-  bool _isGregorianLeapYear(int year) {
-    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
-  }
-
-  void _resetHasil() {
-    _sudahDikonversi = false;
-    _sakaHari = 0;
-    _sakaBulan = 0;
-    _sakaTahun = 0;
-    _namaBulanSaka = '';
-    _namaHariSaka = '';
-    _hasilLengkapSaka = '';
-  }
-
-  void _setError(String message) {
-    setState(() {
-      _pesanError = message;
-      _resetHasil();
-    });
-  }
-
-  void _konversiTanggal() {
-    if (_tanggalMasehi == null) {
-      _setError('Silakan pilih tanggal terlebih dahulu');
+  void _konversi() {
+    if (_tanggal == null) {
+      setState(() => _error = "Silakan pilih tanggal terlebih dahulu");
       return;
     }
 
-    final tanggal = _tanggalMasehi!;
+    final tgl = _tanggal!;
 
-    if (tanggal.isBefore(_minDate) || tanggal.isAfter(_maxDate)) {
-      _setError('Tanggal harus di antara tahun 1937 sampai 2076');
-      return;
-    }
+    _DataNyepi? nyepiAwal;
+    _DataNyepi? nyepiBerikut;
 
-    try {
-      final int gYear = tanggal.year;
-
-      // Awal tahun Saka untuk tahun Gregorian saat ini
-      final bool leapThisYear = _isGregorianLeapYear(gYear);
-      final DateTime sakaNewYearThisGregorian =
-          leapThisYear ? DateTime(gYear, 3, 21) : DateTime(gYear, 3, 22);
-
-      int sakaYear;
-      DateTime startOfSakaYear;
-      bool sakaYearUsesLeapChaitra;
-
-      if (tanggal.isBefore(sakaNewYearThisGregorian)) {
-        // Masih masuk tahun Saka sebelumnya
-        sakaYear = gYear - 79;
-        final int prevGregorian = gYear - 1;
-        final bool leapPrevGregorian = _isGregorianLeapYear(prevGregorian);
-        startOfSakaYear = leapPrevGregorian
-            ? DateTime(prevGregorian, 3, 21)
-            : DateTime(prevGregorian, 3, 22);
-        sakaYearUsesLeapChaitra = leapPrevGregorian;
-      } else {
-        // Sudah masuk tahun Saka baru
-        sakaYear = gYear - 78;
-        startOfSakaYear = sakaNewYearThisGregorian;
-        sakaYearUsesLeapChaitra = leapThisYear;
-      }
-
-      final int selisihHari = tanggal.difference(startOfSakaYear).inDays;
-
-      final List<int> panjangBulan = [
-        sakaYearUsesLeapChaitra ? 31 : 30, // Chaitra
-        31, // Vaisakha
-        31, // Jyaistha
-        31, // Ashadha
-        31, // Shravana
-        31, // Bhadra
-        30, // Ashvina
-        30, // Kartika
-        30, // Agrahayana
-        30, // Pausa
-        30, // Magha
-        30, // Phalguna
-      ];
-
-      int sisaHari = selisihHari;
-      int bulanSaka = 1;
-      int hariSaka = 1;
-
-      for (int i = 0; i < panjangBulan.length; i++) {
-        if (sisaHari < panjangBulan[i]) {
-          bulanSaka = i + 1;
-          hariSaka = sisaHari + 1;
-          break;
-        } else {
-          sisaHari -= panjangBulan[i];
+    for (int i = 0; i < _dataNyepi.length; i++) {
+      final n = _dataNyepi[i];
+      if (!tgl.isBefore(n.tanggal)) {
+        nyepiAwal = n;
+        if (i + 1 < _dataNyepi.length) {
+          nyepiBerikut = _dataNyepi[i + 1];
         }
       }
-
-      final namaBulan = _namaBulanSakaDariNomor(bulanSaka);
-      final namaHari = _namaHariIndonesiaDariWeekday(tanggal.weekday);
-
-      setState(() {
-        _pesanError = '';
-        _sudahDikonversi = true;
-        _sakaHari = hariSaka;
-        _sakaBulan = bulanSaka;
-        _sakaTahun = sakaYear;
-        _namaBulanSaka = namaBulan;
-        _namaHariSaka = namaHari;
-        _hasilLengkapSaka = '$hariSaka $namaBulan $sakaYear Saka';
-      });
-    } catch (_) {
-      _setError('Gagal mengonversi tanggal, silakan coba lagi');
     }
-  }
 
-  void _resetInputDanHasil() {
+    if (nyepiAwal == null || nyepiBerikut == null) {
+      setState(() => _error = "Data tidak tersedia");
+      return;
+    }
+
+    int selisih = tgl.difference(nyepiAwal.tanggal).inDays;
+    int totalHari = nyepiBerikut.tanggal.difference(nyepiAwal.tanggal).inDays;
+
+    int jumlahSasih = totalHari > 360 ? 13 : 12;
+
+    List<int> panjang = _panjangSasih(jumlahSasih);
+
+    int sasih = 0;
+    int sisa = selisih;
+
+    for (int i = 0; i < panjang.length; i++) {
+      if (sisa < panjang[i]) {
+        sasih = i;
+        break;
+      }
+      sisa -= panjang[i];
+    }
+
+    int tglSaka;
+    String fase;
+
+    if (sisa < 15) {
+      fase = "Penanggal";
+      tglSaka = sisa + 1;
+    } else {
+      fase = "Panglong";
+      tglSaka = sisa - 14;
+    }
+
     setState(() {
-      _tanggalMasehi = null;
-      _pesanError = '';
-      _resetHasil();
+      _converted = true;
+      _error = '';
+
+      hari = tglSaka;
+      bulan = sasih + 1;
+      tahun = nyepiAwal!.tahunSaka;
+      namaBulan = _namaSasih[sasih];
+      namaHari = _saptawara(tgl.weekday);
+
+      hasilLengkap =
+          "$namaHari, $fase $tglSaka Sasih $namaBulan $tahun Saka";
     });
   }
 
-  Widget _infoCard(String title, String value, ColorScheme colorScheme) {
+  void _reset() {
+    setState(() {
+      _tanggal = null;
+      _converted = false;
+      _error = '';
+    });
+  }
+
+  Widget _card(String title, String value, ColorScheme olorScheme) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: colorScheme.primaryContainer,
+          color: olorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 12,
-                color: colorScheme.onPrimaryContainer,
-              ),
-            ),
+            Text(title, style: TextStyle(fontSize: 12, color: olorScheme.onPrimaryContainer)),
             const SizedBox(height: 8),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onPrimaryContainer,
-              ),
-            ),
+            Text(value, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
           ],
         ),
       ),
@@ -254,147 +214,122 @@ class _KonversiSakaPageState extends State<KonversiSakaPage> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final olorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Masehi ke Saka'),
-        backgroundColor: colorScheme.primary,
-        foregroundColor: colorScheme.onPrimary,
+        title: const Text('Masehi ke Saka Bali'),
+        backgroundColor: olorScheme.primary,
+        foregroundColor: olorScheme.onPrimary,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Konversi tanggal Masehi menjadi Kalender Saka dengan rentang tahun 1937-2076.',
-              style: TextStyle(
-                fontSize: 14,
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Catatan: Konversi ini menggunakan sistem Indian National Calendar (Shaka Calendar).',
-              style: TextStyle(
-                fontSize: 12,
-                color: colorScheme.onSurfaceVariant,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
+
+            Text("Konversi tanggal Masehi menjadi Kalender Saka Bali",
+                style: TextStyle(color: olorScheme.onSurfaceVariant)),
+
             const SizedBox(height: 16),
+
             InkWell(
-              onTap: _pickTanggalMasehi,
-              borderRadius: BorderRadius.circular(16),
+              onTap: _pickDate,
               child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  color: colorScheme.surfaceContainerLowest,
-                  border: Border.all(color: colorScheme.outlineVariant),
+                  border: Border.all(color: olorScheme.outlineVariant),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.event, color: colorScheme.primary),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        _tanggalPilihanText(),
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    const Icon(Icons.keyboard_arrow_down_rounded),
+                    Icon(Icons.event, color: olorScheme.primary),
+                    const SizedBox(width: 12),
+                    Text(_tanggalText()),
                   ],
                 ),
               ),
             ),
+
             const SizedBox(height: 16),
+
             FilledButton(
-              onPressed: _konversiTanggal,
-              style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(52),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-              child: const Text('Konversi ke Saka'),
+              onPressed: _konversi,
+              style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+              child: const Text("Konversi ke Saka"),
             ),
+
             const SizedBox(height: 8),
+
             OutlinedButton(
-              onPressed: _resetInputDanHasil,
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-              child: const Text('Reset'),
+              onPressed: _reset,
+              style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+              child: const Text("Reset"),
             ),
-            const SizedBox(height: 8),
-            if (_pesanError.isNotEmpty)
-              Text(_pesanError, style: TextStyle(color: colorScheme.error)),
-            const SizedBox(height: 16),
-            if (_sudahDikonversi && _pesanError.isEmpty) ...[
+
+            if (_error.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(_error, style: TextStyle(color: olorScheme.error)),
+              ),
+
+            if (_converted) ...[
+              const SizedBox(height: 16),
+
               Container(
-                width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer,
+                  color: olorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Hasil Lengkap',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: colorScheme.onPrimaryContainer,
-                      ),
-                    ),
+                    const Text("Hasil Lengkap"),
                     const SizedBox(height: 8),
-                    Text(
-                      _hasilLengkapSaka,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.onPrimaryContainer,
-                      ),
-                    ),
+                    Text(hasilLengkap,
+                        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
+
               const SizedBox(height: 12),
+
               Row(
                 children: [
-                  _infoCard('Hari', _sakaHari.toString(), colorScheme),
+                  _card("Hari", hari.toString(), olorScheme),
                   const SizedBox(width: 12),
-                  _infoCard('Bulan', _sakaBulan.toString(), colorScheme),
+                  _card("Bulan", bulan.toString(), olorScheme),
                 ],
               ),
+
               const SizedBox(height: 12),
+
               Row(
                 children: [
-                  _infoCard('Tahun', _sakaTahun.toString(), colorScheme),
+                  _card("Tahun", tahun.toString(), olorScheme),
                   const SizedBox(width: 12),
-                  _infoCard('Nama Bulan', _namaBulanSaka, colorScheme),
+                  _card("Nama Bulan", namaBulan, olorScheme),
                 ],
               ),
+
               const SizedBox(height: 12),
+
               Row(
                 children: [
-                  _infoCard('Nama Hari', _namaHariSaka, colorScheme),
+                  _card("Nama Hari", namaHari, olorScheme),
                 ],
               ),
-            ],
+            ]
           ],
         ),
       ),
     );
   }
+}
+
+class _DataNyepi {
+  final DateTime tanggal;
+  final int tahunSaka;
+  const _DataNyepi(this.tanggal, this.tahunSaka);
 }
