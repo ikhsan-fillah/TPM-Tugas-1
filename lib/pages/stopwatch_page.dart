@@ -19,6 +19,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
   Timer? timer;
   bool isRunning = false;
   List<String> laps = [];
+  List<String> lapOverallTimes = [];
 
   @override
   void initState() {
@@ -56,6 +57,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
       milliseconds = 0;
       lastLapTime = 0;
       laps.clear();
+      lapOverallTimes.clear();
       isRunning = false;
     });
   }
@@ -79,6 +81,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
           "${seconds.toString().padLeft(2, '0')}."
           "${ms.toString().padLeft(2, '0')}";
   }
+
   String _formatLap(int time) {
     int hours = time ~/ 3600000;
     int minutes = (time ~/ 60000) % 60;
@@ -97,6 +100,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
       lastLapTime = milliseconds;
 
       laps.insert(0, _formatLap(lapTime));
+      lapOverallTimes.insert(0, _formatLap(milliseconds));
     });
   }
 
@@ -208,12 +212,33 @@ class _StopwatchPageState extends State<StopwatchPage> {
                           ),
                         ),
                         title: Text("Lap ${laps.length - index}"),
-                        trailing: Text(
+                        subtitle: Text(
                           laps[index],
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: colorScheme.primary,
                           ),
+                        ),
+                        trailing: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              "Overall Time",
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            Text(
+                              lapOverallTimes[index],
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: colorScheme.secondary,
+                                fontFeatures: const [FontFeature.tabularFigures()],
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     },

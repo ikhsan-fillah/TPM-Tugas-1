@@ -164,12 +164,15 @@ class _CekBilanganPageState extends State<CekBilanganPage> {
                   Text(pesanError, style: TextStyle(color: colorScheme.error)),
                 const SizedBox(height: 16),
                 if (angka != null)
-                  Row(
-                    children: [
-                      _infoCard("Jenis Bilangan", jenis, colorScheme),
-                      const SizedBox(width: 12),
-                      _infoCard("Status Prima", statusPrima, colorScheme),
-                    ],
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _infoCard("Jenis Bilangan", jenis, colorScheme),
+                        const SizedBox(width: 12),
+                        _infoCard("Status Prima", statusPrima, colorScheme),
+                      ],
+                    ),
                   ),
               ],
             ),

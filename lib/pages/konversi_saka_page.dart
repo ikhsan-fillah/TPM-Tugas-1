@@ -180,7 +180,7 @@ class _KonversiSakaPageState extends State<KonversiSakaPage> {
       namaHari = _saptawara(tgl.weekday);
 
       hasilLengkap =
-          "$namaHari, $fase $tglSaka Sasih $namaBulan $tahun Saka";
+          "$namaHari, $fase $tglSaka $namaBulan $tahun Saka";
     });
   }
 

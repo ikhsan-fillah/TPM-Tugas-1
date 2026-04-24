@@ -11,7 +11,7 @@ class JumlahAngkaPage extends StatefulWidget {
 class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
   TextEditingController inputAngka = TextEditingController();
 
-  int jumlahDigit = 0;
+  int jumlahAngka = 0;
   int total = 0;
   String pesanError = "";
 
@@ -21,7 +21,7 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
     if (text.isEmpty) {
       setState(() {
         pesanError = "Input tidak boleh kosong";
-        jumlahDigit = 0;
+        jumlahAngka = 0;
         total = 0;
       });
       return;
@@ -29,33 +29,25 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
 
     if (text.length > 10000) {
       setState(() {
-        pesanError = "Digit tidak boleh lebih dari 10000";
-        jumlahDigit = 0;
+        pesanError = "Input tidak boleh lebih dari 10000 karakter";
+        jumlahAngka = 0;
         total = 0;
       });
       return;
     }
 
-    int jumlahDigitBaru = 0;
-    int totalBaru = 0;
-
-    for (int i = 0; i < text.length; i++) {
-      final char = text[i];
-      if (RegExp(r'^[0-9]$').hasMatch(char)) {
-        jumlahDigitBaru++;
-        totalBaru += int.parse(char);
-      }
-    }
+    final matches = RegExp(r'\d+').allMatches(text);
+    final angkaList = matches.map((m) => int.parse(m.group(0)!)).toList();
 
     setState(() {
-      if (jumlahDigitBaru == 0) {
+      if (angkaList.isEmpty) {
         pesanError = "Input harus mengandung minimal satu angka";
-        jumlahDigit = 0;
+        jumlahAngka = 0;
         total = 0;
       } else {
         pesanError = "";
-        jumlahDigit = jumlahDigitBaru;
-        total = totalBaru;
+        jumlahAngka = angkaList.length;
+        total = angkaList.fold(0, (sum, val) => sum + val);
       }
     });
   }
@@ -73,7 +65,7 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
   void _clearText() {
     setState(() {
       inputAngka.clear();
-      jumlahDigit = 0;
+      jumlahAngka = 0;
       total = 0;
       pesanError = "";
     });
@@ -123,93 +115,95 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
       body: Builder(
         builder: (context) {
           final colorScheme = Theme.of(context).colorScheme;
-          return Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Ketik kombinasi huruf dan angka, lalu lihat berapa banyak digit dan berapa total angkanya.",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: colorScheme.onSurfaceVariant,
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Ketik kombinasi huruf dan angka, lalu lihat berapa banyak angka dan berapa total penjumlahannya.",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: inputAngka,
-                        keyboardType: TextInputType.multiline,
-                        minLines: 5,
-                        maxLines: 5,
-                        decoration: InputDecoration(
-                          hintText: "Masukkan huruf dan angka ...",
-                          alignLabelWithHint: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          hintStyle: const TextStyle(fontSize: 14),
-                          contentPadding: const EdgeInsets.all(16),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(
-                              color: colorScheme.primary,
-                              width: 2,
+                  const SizedBox(height: 16),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: inputAngka,
+                          keyboardType: TextInputType.multiline,
+                          minLines: 5,
+                          maxLines: 5,
+                          decoration: InputDecoration(
+                            hintText: "Masukkan huruf dan angka ...",
+                            alignLabelWithHint: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
+                            hintStyle: const TextStyle(fontSize: 14),
+                            contentPadding: const EdgeInsets.all(16),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: colorScheme.primary,
+                                width: 2,
+                              ),
+                            ),
+                            filled: true,
+                            fillColor: colorScheme.surfaceContainerLowest,
                           ),
-                          filled: true,
-                          fillColor: colorScheme.surfaceContainerLowest,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: _pasteText,
-                      child: Text(
-                        "Paste",
-                        style: TextStyle(color: colorScheme.primary),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: _clearText,
-                      child: Text(
-                        "Clear",
-                        style: TextStyle(color: colorScheme.primary),
-                      ),
-                    ),
-                  ],
-                ),
-
-                FilledButton(
-                  onPressed: _hitung,
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 48),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text("Hitung"),
-                ),
-
-                SizedBox(height: 8),
-                if (pesanError.isNotEmpty)
-                  Text(pesanError, style: TextStyle(color: colorScheme.error)),
-                SizedBox(height: 16),
-                if (jumlahDigit > 0)
-                  Row(
-                    children: [
-                      _infoCard("Jumlah Digit", jumlahDigit, colorScheme),
-                      const SizedBox(width: 12),
-                      _infoCard("Total Penjumlahan", total, colorScheme),
                     ],
                   ),
-              ],
+                  Row(
+                    children: [
+                      TextButton(
+                        onPressed: _pasteText,
+                        child: Text(
+                          "Paste",
+                          style: TextStyle(color: colorScheme.primary),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: _clearText,
+                        child: Text(
+                          "Clear",
+                          style: TextStyle(color: colorScheme.primary),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  FilledButton(
+                    onPressed: _hitung,
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text("Hitung"),
+                  ),
+
+                  SizedBox(height: 8),
+                  if (pesanError.isNotEmpty)
+                    Text(pesanError, style: TextStyle(color: colorScheme.error)),
+                  SizedBox(height: 16),
+                  if (jumlahAngka > 0)
+                    Row(
+                      children: [
+                        _infoCard("Jumlah Angka", jumlahAngka, colorScheme),
+                        const SizedBox(width: 12),
+                        _infoCard("Total Penjumlahan", total, colorScheme),
+                      ],
+                    ),
+                ],
+              ),
             ),
           );
         },
