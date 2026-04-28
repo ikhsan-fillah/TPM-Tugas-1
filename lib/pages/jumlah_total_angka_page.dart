@@ -12,7 +12,7 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
   TextEditingController inputAngka = TextEditingController();
 
   int jumlahAngka = 0;
-  int total = 0;
+  double total = 0;
   String pesanError = "";
 
   void _hitung() {
@@ -36,8 +36,16 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
       return;
     }
 
-    final matches = RegExp(r'\d+').allMatches(text);
-    final angkaList = matches.map((m) => int.parse(m.group(0)!)).toList();
+    final matches = RegExp(r'\d+(?:[.,]\d+)?').allMatches(text);
+
+    final angkaList = matches.map((m) {
+      String value = m.group(0)!;
+
+      // ubah koma jadi titik biar bisa diparse
+      value = value.replaceAll(',', '.');
+
+      return double.parse(value);
+    }).toList();
 
     setState(() {
       if (angkaList.isEmpty) {
@@ -47,7 +55,7 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
       } else {
         pesanError = "";
         jumlahAngka = angkaList.length;
-        total = angkaList.fold(0, (sum, val) => sum + val);
+        total = angkaList.fold(0.0, (sum, val) => sum + val);
       }
     });
   }
@@ -71,7 +79,7 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
     });
   }
 
-  Widget _infoCard(String title, int value, ColorScheme colorScheme) {
+  Widget _infoCard(String title, String value, ColorScheme colorScheme) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -89,9 +97,9 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
                 color: colorScheme.onPrimaryContainer,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
-              value.toString(),
+              value,
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -102,6 +110,13 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
         ),
       ),
     );
+  }
+
+  String _formatTotal(double value) {
+    if (value % 1 == 0) {
+      return value.toInt().toString();
+    }
+    return value.toString();
   }
 
   @override
@@ -178,7 +193,6 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
                       ),
                     ],
                   ),
-
                   FilledButton(
                     onPressed: _hitung,
                     style: FilledButton.styleFrom(
@@ -189,17 +203,27 @@ class _JumlahAngkaPageState extends State<JumlahAngkaPage> {
                     ),
                     child: const Text("Hitung"),
                   ),
-
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   if (pesanError.isNotEmpty)
-                    Text(pesanError, style: TextStyle(color: colorScheme.error)),
-                  SizedBox(height: 16),
+                    Text(
+                      pesanError,
+                      style: TextStyle(color: colorScheme.error),
+                    ),
+                  const SizedBox(height: 16),
                   if (jumlahAngka > 0)
                     Row(
                       children: [
-                        _infoCard("Jumlah Angka", jumlahAngka, colorScheme),
+                        _infoCard(
+                          "Jumlah Angka",
+                          jumlahAngka.toString(),
+                          colorScheme,
+                        ),
                         const SizedBox(width: 12),
-                        _infoCard("Total Penjumlahan", total, colorScheme),
+                        _infoCard(
+                          "Total Penjumlahan",
+                          _formatTotal(total),
+                          colorScheme,
+                        ),
                       ],
                     ),
                 ],
